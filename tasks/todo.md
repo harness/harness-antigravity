@@ -9,3 +9,5 @@
 - [ ] Submit to marketplace when requested.
 
 - [x] Document private-repository cloning, Antigravity installation, OAuth/PAT setup, verification and troubleshooting in README.
+
+- [x] Correct README in the Harness-owned clone: source each installation path, use the organization URL, and label unverified runtime behavior.

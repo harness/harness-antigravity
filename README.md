@@ -1,51 +1,47 @@
 # Harness for Antigravity
 
-Connect Antigravity to Harness to build and debug pipelines, manage deployments, investigate security findings, and use 71 bundled Harness workflows across nine categories.
+Connect Antigravity to Harness with hosted MCP and 71 bundled workflow skills for pipelines, deployments, security, feature flags, and platform operations.
 
-## Install in Antigravity
+## Install using the Antigravity app
 
-### 1. Get the plugin
+The following app flow comes from the **Antigravity Plugin Marketplace Publishing Guide**, Part 1, “Managing Plugins by Surface.” It has not yet been tested end to end with this plugin.
 
-You need Antigravity with plugin support and access to this **private GitHub repository**. GitHub access and Harness authentication are separate: cloning the repository does not sign you in to Harness.
+1. Open **Customizations** in Antigravity's left sidebar.
+2. Select **Plugins**.
+3. Click **+ Install from URL**.
+4. Enter this repository URL:
 
-Clone using an authenticated Git client. With the [GitHub CLI](https://cli.github.com/):
+   ```text
+   https://github.com/harness/harness-antigravity.git
+   ```
+
+5. Follow the installation prompts, then check **Installed** for **Harness**.
+
+The guide also supports installing from a local path. To obtain a local copy:
 
 ```sh
-gh auth login
-gh repo clone thisrohangupta/harness-antigravity
+git clone https://github.com/harness/harness-antigravity.git
 cd harness-antigravity
 ```
 
-If you already have a checkout, open that directory instead. On the original development machine it is `/Users/rohangupta/code/harness-antigravity`.
+Enter the full path of that checkout in the app's local-path installation flow. Select the folder containing `plugin.json`. If GitHub requires authentication, use an account with access to the repository; this is separate from Harness sign-in.
 
-### 2. Install the local folder
+## Connect to Harness
 
-From the checkout, with `agy` available in your terminal:
+The default [MCP configuration](mcp_config.json) uses:
 
-```sh
-agy plugin validate .
-agy plugin install .
-agy plugin list --json
-```
+- Endpoint: `https://mcp.harness.io/mcp`
+- OAuth client ID: `mcp-client`
 
-In the app, you can instead open **Customizations → Plugins**, choose **+ Install from URL**, and select/enter the local checkout path if your build offers local-path installation. Select the folder containing `plugin.json`. Cloning first avoids relying on the app's GitHub authentication for a private URL.
+Hosted MCP must be enabled for your Harness account. The profile does not contain a PAT or client secret.
 
-See [Antigravity plugin installation](https://www.antigravity.google/docs/plugins) for supported installation surfaces. If `agy` is not found, use the app flow or follow the [CLI installation guide](https://www.antigravity.google/docs/cli/install/). If validation rejects marketplace fields or custom skill roots, check the target build's publishing-guide support; do not remove fields blindly. See [publishing compatibility notes](docs/PUBLISHING.md).
+The publishing guide mentions OAuth support but does not describe the sign-in screens. Google's [MCP authentication documentation](https://www.antigravity.google/docs/mcp) provides that procedure: open **Settings → Customizations**, find the MCP server, select **Authenticate**, and complete the browser authorization prompts.
 
-### 3. Connect Harness with OAuth (default)
+That documentation lists `https://antigravity.google/oauth-callback` as the required redirect for manually configured OAuth clients. The HarnessID administrator must confirm that `mcp-client` permits it. **The callback allowlist and successful sign-in for this plugin have not been verified.** If authentication fails, record the error before changing configuration.
 
-The default profile connects to `https://mcp.harness.io/mcp` using the public OAuth client `mcp-client`. Hosted MCP must be enabled for your Harness account; no API key or client secret is needed in this profile.
+## Check that it works
 
-1. Open Antigravity **Settings → Customizations**.
-2. Find the plugin's Harness MCP server (`harness-antigravity-harness`) and select **Authenticate**.
-3. Complete Harness sign-in in your browser and follow Antigravity's prompts to finish authorization.
-4. Confirm the server connects, then provide your Harness account, organization and project.
-
-HarnessID must allow `https://antigravity.google/oauth-callback` for `mcp-client`. If you see an invalid redirect error, ask the HarnessID administrator to verify this allowlist. Do not add a client secret to this public-client configuration. See [Antigravity OAuth setup](https://www.antigravity.google/docs/mcp).
-
-### 4. Verify the installation
-
-Confirm the plugin is enabled and exposes **71 skills** and **one MCP server**. Try this read-only prompt with your actual scope:
+The package contains **71 skills** and **one MCP server**. Check what Antigravity actually discovers after installation. Then provide your Harness scope and try a read-only request:
 
 ```text
 In Harness account <account>, organization <org>, project <project>,
@@ -53,58 +49,62 @@ list the five most recent pipeline executions and summarize their status.
 Do not make changes.
 ```
 
-You can also select `/debug-pipeline` or `/create-pipeline` from skill autocomplete. A successful scoped API read verifies access; seeing skills or tool schemas alone does not. Installation and signed-in operation have not yet been tested for this package; see [validation status](docs/VALIDATION.md).
+A successful API response verifies that read in the selected scope. The presence of skill files, a server entry, or a local schema response does not establish authenticated access. See [validation status](docs/VALIDATION.md) for checks completed so far.
 
-## Alternative: local MCP with a PAT
+## CLI installation from a local clone
 
-Use this profile when you want a local MCP process connecting directly to Harness SaaS or your own Harness environment. It does not configure an existing remote HTTP MCP deployment.
+These commands are specified in the supplied publishing guide, Part 1, “Step 3: Validate & Install Locally.” Run them from the checkout with a version of `agy` that supports those commands:
 
-From the cloned source folder, **before installing**, run:
+```sh
+agy plugin validate .
+agy plugin install .
+agy plugin list
+```
+
+The public [Antigravity plugin documentation](https://www.antigravity.google/docs/plugins) separately documents CLI installation from a repository URL:
+
+```sh
+agy plugin install https://github.com/harness/harness-antigravity.git
+```
+
+The public reference currently shows a narrower manifest schema than the supplied marketplace guide. This package follows the supplied guide, including marketplace metadata and category-specific skill roots. If your installed CLI rejects the manifest or lacks `plugin validate`, check the supported Antigravity version with the publisher; do not treat the package's Python validator as equivalent to native CLI validation.
+
+## Optional PAT profile
+
+This repository includes an alternative [local PAT configuration](config/local-pat.json). It launches `harness-mcp-v2@3.2.34` through `npx` as a local stdio process that connects to your Harness platform. It is not a connection profile for an existing remote HTTP MCP server.
+
+Before installing a local checkout, select the profile using this repository's helper:
 
 ```sh
 python3 scripts/select-connection.py local-pat
-agy plugin validate .
-agy plugin install .
 ```
 
-During setup, supply the prompted values:
+Then install that checkout using one of the local installation methods above. The configuration declares two inputs:
 
-| Setting | Value |
+| Input | Value |
 | --- | --- |
-| Harness API key | Your PAT or SAT with permission for the intended resources |
-| Harness platform URL | `https://app.harness.io`, or your Harness environment's HTTPS base URL |
+| Harness API key | A PAT or SAT with access to the intended resources |
+| Harness platform URL | `https://app.harness.io` or your Harness environment's HTTPS base URL |
 
-Enter the token only in Antigravity's credential UI, not in chat or committed files. This profile launches `npx -y harness-mcp-v2@3.2.34 stdio`; it needs Node/npx and network access to npm and Harness. The publishing guide specifies bundled Node/npx in the desktop app and keychain storage for secret variables. Python 3 is only needed to select the profile.
+The publishing guide, Part 2 §3.2, describes an installation configuration modal for declared variables and OS-keychain storage for secret values. This profile uses that format, but the prompt and token storage have not been tested in Antigravity. Do not put credentials in chat or commit them to the repository.
 
-If the plugin is already installed, change the profile in the source checkout and reinstall that local folder; confirm only one Harness server is enabled. Never edit the installed cache. To return to OAuth:
+This profile needs Node/npx and access to npm and the Harness API. Python 3 is needed only for the profile-selection helper. To restore the source checkout's OAuth configuration before installation:
 
 ```sh
 python3 scripts/select-connection.py hosted-oauth
-agy plugin validate .
-agy plugin install .
 ```
 
-After either setup, repeat the scoped read above.
-
-## Troubleshooting
-
-| Symptom | Next step |
-| --- | --- |
-| GitHub says repository not found | Confirm your GitHub identity has access to this private repository; clone locally before installing. |
-| Skills or server do not appear | Confirm the plugin is enabled and the installed folder contains `plugin.json`; inspect `agy plugin list --json` and reopen the conversation. |
-| OAuth reports invalid redirect | Have the HarnessID administrator verify the Antigravity callback for `mcp-client`. |
-| Harness returns 401 | Reauthenticate OAuth, or check the PAT entered through the credential UI for the PAT profile. |
-| Harness returns 403 | Check the selected account/org/project and your Harness RBAC permissions. |
-| PAT server cannot start | Check Node/npx availability and npm access; inspect Antigravity's MCP logs without sharing credentials. |
-
+Changing the source file does not itself update an installed plugin. Installed-plugin profile switching and reinstall behavior have not been verified. Do not edit the installed cache or assume that rerunning an install command replaces the active configuration.
 
 ## Included workflows
 
-See [SKILLS.md](SKILLS.md) for all 71 workflows. Skills and shared references are copied unchanged from [harness/harness-skills](https://github.com/harness/harness-skills), with an exact revision and SHA-256 inventory in [skills-source.json](skills-source.json).
+See [SKILLS.md](SKILLS.md) for the 71 workflows. Skills, references, and templates are copied from [harness/harness-skills](https://github.com/harness/harness-skills); [skills-source.json](skills-source.json) records the exact revision and file hashes.
 
-The Claude Code PR-attestation skill configures Claude Code, not Antigravity hooks. Some workflows require additional Harness modules, connectors, CLI tools or permissions as described in their prerequisites. Bundling a skill does not establish backend capability or access.
+The `configure-agent-pr-attestation` skill targets Claude Code hooks, not Antigravity hooks. Other workflows may require additional Harness modules, connectors, tools, and permissions stated in their prerequisites.
 
-## Maintain and validate
+## Developer validation
+
+Static packaging checks:
 
 ```sh
 python3 -m venv .venv
@@ -112,11 +112,19 @@ python3 -m venv .venv
 .venv/bin/python scripts/validate.py
 ```
 
-Refresh from an already fetched local skills checkout (the script does not fetch or change that checkout):
+To refresh skills from a fetched local source checkout, substitute its actual path:
 
 ```sh
-python3 scripts/sync-skills.py ../harness-skills --ref origin/main
+python3 scripts/sync-skills.py /path/to/harness-skills --ref origin/main
 .venv/bin/python scripts/validate.py
 ```
 
-Review changes and increment the plugin version before publishing an update. See [docs/PUBLISHING.md](docs/PUBLISHING.md) and [docs/VALIDATION.md](docs/VALIDATION.md) for remaining release checks. This source package has not been installed, authenticated, or submitted to the marketplace. Source repository: https://github.com/thisrohangupta/harness-antigravity (private).
+Static checks cover package structure, skill metadata, reference links, and recorded upstream hashes. They do not prove Antigravity installation, OAuth/PAT interoperability, or marketplace acceptance. See [publishing notes](docs/PUBLISHING.md) and [validation status](docs/VALIDATION.md) before release.
+
+## Sources and verification status
+
+- **Supplied publishing guide:** *Antigravity Plugin Marketplace Publishing Guide.pdf*, Part 1 (app/local installation and CLI validation) and Part 2 §3.2 (MCP configuration and variable prompts). This guide was supplied to the maintainers; it is not bundled here.
+- **Public Google documentation:** [Plugins](https://www.antigravity.google/docs/plugins) and [MCP authentication](https://www.antigravity.google/docs/mcp). These describe general client behavior, not a successful test of this plugin.
+- **Harness server:** [harness/mcp-server](https://github.com/harness/mcp-server), for hosted enablement and OAuth configuration.
+
+Antigravity installation, skill discovery in the app, interactive authentication, and authenticated Harness calls remain unverified. The plugin has not been submitted to the Antigravity marketplace.
