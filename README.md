@@ -30,7 +30,7 @@ agy plugin list --json
 
 In the app, you can instead open **Customizations → Plugins**, choose **+ Install from URL**, and select/enter the local checkout path if your build offers local-path installation. Select the folder containing `plugin.json`. Cloning first avoids relying on the app's GitHub authentication for a private URL.
 
-See [Antigravity plugin installation](https://www.antigravity.google/docs/plugins) for supported installation surfaces. If `agy` is not found, use the app flow or follow the [CLI installation guide](https://www.antigravity.google/docs/cli/installation). If validation rejects marketplace fields or custom skill roots, check the target build's publishing-guide support; do not remove fields blindly. See [publishing compatibility notes](docs/PUBLISHING.md).
+See [Antigravity plugin installation](https://www.antigravity.google/docs/plugins) for supported installation surfaces. If `agy` is not found, use the app flow or follow the [CLI installation guide](https://www.antigravity.google/docs/cli/install/). If validation rejects marketplace fields or custom skill roots, check the target build's publishing-guide support; do not remove fields blindly. See [publishing compatibility notes](docs/PUBLISHING.md).
 
 ### 3. Connect Harness with OAuth (default)
 
