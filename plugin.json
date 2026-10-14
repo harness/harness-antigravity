@@ -1,0 +1,40 @@
+{
+  "name": "harness-antigravity",
+  "displayName": "Harness",
+  "version": "1.0.0",
+  "description": "Build and debug pipelines, manage deployments, investigate security findings, and operate Harness with connected tools and reusable workflow skills.",
+  "logo": "assets/logo.png",
+  "suggestedPrompts": [
+    "List recent failed pipelines in my Harness project and explain the failures.",
+    "Create a CI pipeline for this repository and show me the YAML before saving.",
+    "Review deployment readiness for my Harness service."
+  ],
+  "category": "Developer Tools",
+  "keywords": [
+    "harness",
+    "ci-cd",
+    "pipelines",
+    "deployments",
+    "security",
+    "feature-flags"
+  ],
+  "author": {
+    "name": "Harness",
+    "url": "https://www.harness.io"
+  },
+  "homepage": "https://developer.harness.io",
+  "license": "Apache-2.0",
+  "skills": [
+    "./skills/pipelines",
+    "./skills/infrastructure",
+    "./skills/access-control",
+    "./skills/fme",
+    "./skills/database",
+    "./skills/platform",
+    "./skills/security",
+    "./skills/observability-governance",
+    "./skills/agents"
+  ],
+  "mcpServers": "./mcp_config.json",
+  "repository": "https://github.com/thisrohangupta/harness-antigravity"
+}

@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "harness": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "harness-mcp-v2@3.2.34",
+        "stdio"
+      ],
+      "env": {
+        "HARNESS_MCP_MODE": "single-user",
+        "HARNESS_API_KEY": "${HARNESS_API_KEY}",
+        "HARNESS_BASE_URL": "${HARNESS_BASE_URL}"
+      }
+    }
+  },
+  "variables": [
+    {
+      "name": "HARNESS_API_KEY",
+      "title": "Harness API key",
+      "description": "Personal access token (PAT) or service account token (SAT) with access to your target Harness resources.",
+      "link": "https://developer.harness.io/docs/platform/automation/api/add-and-manage-api-keys/",
+      "secret": true
+    },
+    {
+      "name": "HARNESS_BASE_URL",
+      "title": "Harness platform URL",
+      "description": "Enter https://app.harness.io or the HTTPS base URL of your Harness environment.",
+      "secret": false
+    }
+  ]
+}
