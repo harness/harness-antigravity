@@ -5,4 +5,7 @@
 - [x] Add hosted OAuth and optional local PAT profiles.
 - [x] Validate packaging, both profiles and all relative links.
 - [ ] Run agy validation/install and signed-in scoped read on a machine with Antigravity.
-- [ ] Publish a source repository and submit to marketplace when requested.
+- [x] Publish the private source repository on GitHub.
+- [ ] Submit to marketplace when requested.
+
+- [x] Document private-repository cloning, Antigravity installation, OAuth/PAT setup, verification and troubleshooting in README.
