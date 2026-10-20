@@ -36,5 +36,5 @@
     "./skills/agents"
   ],
   "mcpServers": "./mcp_config.json",
-  "repository": "https://github.com/thisrohangupta/harness-antigravity"
+  "repository": "https://github.com/harness/harness-antigravity"
 }

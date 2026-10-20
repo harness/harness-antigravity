@@ -7,7 +7,7 @@ The supplied Antigravity Plugin Marketplace Publishing Guide is the manifest aut
 3. Verify the HarnessID `mcp-client` allows Antigravity's callback. Complete OAuth and a read in an explicitly selected project. Record the result in VALIDATION.md.
 4. Separately test the PAT profile if distributing it; confirm the credential prompt and a scoped read. Restore the intended published default afterward.
 5. Review upstream workflow prerequisites, especially the Claude-specific attestation skill. Resolve any validator or discovery differences before submission.
-6. Source repository: https://github.com/thisrohangupta/harness-antigravity (private). Confirm repository visibility and publisher ownership requirements before marketplace submission.
+6. Source repository: https://github.com/harness/harness-antigravity. Confirm repository visibility and publisher ownership requirements before marketplace submission.
 7. Submit through the marketplace publisher process provided by Google. The supplied guide describes packaging and local validation but does not specify a submission endpoint or review SLA.
 8. Increment version for each subsequent published update.
 
